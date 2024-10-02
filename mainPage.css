@@ -1,0 +1,36 @@
+body {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+header {
+    display: flex;
+    flex-direction: row;
+    height: 50px;
+    justify-content: center;
+    background-color: rgb(46, 124, 39);
+    align-items: center;
+    color:white;
+
+}
+
+.navClick {
+    text-decoration: none;
+    list-style-type: none;
+    margin-left: 8%;
+    cursor: pointer;
+
+    
+}
+
+.copyright{
+    display: flex;
+    color: white;
+    flex-direction: column;
+    width: 100%;
+    background-color: #282828;
+    position: fixed;
+    bottom: 0;
+    padding: 10px ;
+}
