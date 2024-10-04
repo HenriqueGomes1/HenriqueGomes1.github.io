@@ -34,3 +34,14 @@ header {
     bottom: 0;
     padding: 10px ;
 }
+
+.MainContent{
+    display: flex;
+    background-color: rgb(100, 86, 54);
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 45vw;
+    height: 200vh;
+    margin: 0 auto;
+}
