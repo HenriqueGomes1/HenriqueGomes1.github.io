@@ -24,15 +24,35 @@ header {
     
 }
 
+.secao1 {
+    background: red;
+    height: 100vh;
+}
+.secao2 {
+    background: rgb(115, 255, 0);
+    height: 100vh;
+}
+.secao3 {
+    background: rgb(0, 217, 255);
+    height: 100vh;
+}
+.secao4 {
+    background: rgb(0, 255, 13);
+    height: 100vh;
+}
+
+a {
+    color: white;
+    text-decoration: none;
+}
 .copyright{
     display: flex;
     color: white;
     flex-direction: column;
-    width: 100%;
+   
     background-color: #282828;
-    position: fixed;
-    bottom: 0;
     padding: 10px ;
+ 
 }
 
 .MainContent{
