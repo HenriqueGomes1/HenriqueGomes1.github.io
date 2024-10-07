@@ -1,66 +1,23 @@
-body {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    height: 100%;
-}
-
-.WAR{
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-color: rgb(238, 173, 43);
-    width: 30vw;
-    height: 10vh;
-
-}
-
-.main {
-    display: flex; 
-    width: 30vw;
-    height: 80vh;
-    justify-content: center;
-
-}
-
-.login-form {
-    background-color: rgb(238, 173, 43);
-    width: 100%;
-
-}
-
-h2 {
-    margin-bottom: 20px;
-    text-align: center;
-}
-
-label {
-    display: block;
-    margin-bottom: 5px;
-    margin-left: 15px;
-}
-
-input {
-    width: 90%;
-    padding: 7px;
-    margin-left: 10px;
-    margin-bottom: 15px;
-    border: 1px solid #ccc;
-    border-radius: 3px;
-    background-color: rgba(170, 170, 170, 0.555);
-}
-
-button {
-    width: 55%;
-    padding: 10px;
-    margin-left: 20%;
-    background-color: rgb(167, 122, 31);
-    color: white;
-    border: none;
-    border-radius: 100px;
-    cursor: pointer;
-}
-
-button:hover {
-    background-color: rgb(104, 75, 18);
-}
+.link-underline {
+    display: inline-block;
+    position: relative;
+    text-decoration: none;
+    color: #333; /* Cor do texto */
+  }
+  
+  .link-underline::after {
+    content: "";
+    position: absolute;
+    width: 0;
+    height: 2px; /* Espessura da linha */
+    background-color: #000; /* Cor da linha */
+    left: 50%; /* Começa do centro */
+    bottom: 0;
+    transform: translateX(-50%); /* Centraliza a linha */
+    transition: width 0.3s ease; /* Transição suave */
+  }
+  
+  .link-underline:hover::after {
+    width: 100%; /* Expande a linha para 100% da largura do elemento */
+  }
+  

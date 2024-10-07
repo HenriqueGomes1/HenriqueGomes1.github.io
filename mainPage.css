@@ -1,3 +1,7 @@
+html {
+    scroll-behavior: smooth;
+}
+
 body {
     margin: 0;
     padding: 0;
@@ -7,12 +11,42 @@ body {
 header {
     display: flex;
     flex-direction: row;
-    height: 50px;
+    height: 70px;
     justify-content: center;
-    background-color: rgb(46, 124, 39);
+    background-color: rgb(0, 0, 0);
     align-items: center;
     color:white;
+    position: fixed;
+    width: 100%;
+    font-size: 20px;
 
+}
+
+.underline {
+    display: inline-block;
+    position: relative;
+    text-decoration: none;
+  }
+  
+  .underline::after {
+    content: "";
+    position: absolute;
+    width: 0;
+    height: 1px; 
+    background-color: #ffffff;
+    left: 50%; 
+    bottom: -4px;
+    transform: translateX(-50%); 
+    transition: width 0.3s ease; 
+  }
+  
+  .underline:hover::after {
+    width: 100%; 
+  }
+
+img {
+    width: 60px;
+    cursor: pointer;
 }
 
 .navClick {
@@ -25,19 +59,19 @@ header {
 }
 
 .secao1 {
-    background: red;
-    height: 100vh;
+    background: rgb(255, 255, 255);
+    height:100vh;
 }
 .secao2 {
-    background: rgb(115, 255, 0);
+    background: rgb(255, 255, 255);
     height: 100vh;
 }
 .secao3 {
-    background: rgb(0, 217, 255);
+    background:rgb(255, 255, 255);
     height: 100vh;
 }
 .secao4 {
-    background: rgb(0, 255, 13);
+    background:rgb(255, 255, 255);
     height: 100vh;
 }
 
