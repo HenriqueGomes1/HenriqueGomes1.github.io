@@ -1,5 +1,6 @@
 html {
     scroll-behavior: smooth;
+    
 }
 
 body {
@@ -19,6 +20,7 @@ header {
     position: fixed;
     width: 100%;
     font-size: 20px;
+    margin-top: -20px;
 
 }
 
@@ -61,6 +63,11 @@ img {
 .secao1 {
     background: rgb(255, 255, 255);
     height:100vh;
+}
+
+.card {
+    background: red;
+    height: 200px;
 }
 .secao2 {
     background: rgb(255, 255, 255);
