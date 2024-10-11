@@ -21,6 +21,7 @@ header {
     position: fixed;
     width: 100%;
     font-size: 20px;
+    z-index: 9999;
 
 }
 
@@ -130,6 +131,8 @@ img {
     margin-top: 25px;
     width: 75%;
     margin-left: 3% ;
+    display: flex;
+    flex-direction: column;
 }
 
 .secao4 {
