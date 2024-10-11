@@ -1,12 +1,13 @@
 html {
     scroll-behavior: smooth;
-    
+
 }
 
 body {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    background: rgb(234, 234, 234);
 }
 
 header {
@@ -16,11 +17,10 @@ header {
     justify-content: center;
     background-color: rgb(0, 0, 0);
     align-items: center;
-    color:white;
+    color: white;
     position: fixed;
     width: 100%;
     font-size: 20px;
-    margin-top: -20px;
 
 }
 
@@ -28,23 +28,23 @@ header {
     display: inline-block;
     position: relative;
     text-decoration: none;
-  }
-  
-  .underline::after {
+}
+
+.underline::after {
     content: "";
     position: absolute;
     width: 0;
-    height: 1px; 
+    height: 1px;
     background-color: #ffffff;
-    left: 50%; 
+    left: 50%;
     bottom: -4px;
-    transform: translateX(-50%); 
-    transition: width 0.3s ease; 
-  }
-  
-  .underline:hover::after {
-    width: 100%; 
-  }
+    transform: translateX(-50%);
+    transition: width 0.3s ease;
+}
+
+.underline:hover::after {
+    width: 100%;
+}
 
 img {
     width: 60px;
@@ -57,52 +57,97 @@ img {
     margin-left: 8%;
     cursor: pointer;
 
-    
+
 }
 
 .secao1 {
-    background: rgb(255, 255, 255);
-    height:100vh;
+    padding-top: 100px;
+    display: flex;
+    justify-content: space-around;
 }
 
 .card {
-    background: red;
+    display: flex;
+    flex-direction: column;
+    color: black;
+    border: 1px solid black;
+    border-radius: 15px;
+    height: 400px;
+    width: 300px;
+    justify-content: center;
+    align-items: center;
+}
+
+.imagem {
+    border: 1px solid black;
+    width: 250px;
     height: 200px;
+    border-radius: 15px;
+    transition: transform 0.3s ease-in-out;
 }
+
+.imagem:hover {
+    transform: scale(1.1);
+  }
+
+.imagemCard1 {
+    object-fit: cover;
+    width: 100%;
+    height: 100%;
+}
+
 .secao2 {
-    background: rgb(255, 255, 255);
-    height: 100vh;
+
+    display: flex;
+    flex-direction: column;
+    
 }
+
+.reviewLegal {
+    background-color: white;
+    border: 1px solid black;
+    border-radius: 15px;
+    margin-top: 25px;
+    width: 75%;
+    margin-left: 3% ;
+}
+
+.secao2Review {
+    display: flex;
+    align-items: center;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
 .secao3 {
-    background:rgb(255, 255, 255);
-    height: 100vh;
+
+    display: flex;
 }
+
+.dlc {
+    background-color: white;
+    border: 1px solid black;
+    border-radius: 15px;
+    margin-top: 25px;
+    width: 75%;
+    margin-left: 3% ;
+}
+
 .secao4 {
-    background:rgb(255, 255, 255);
-    height: 100vh;
+
+    display: flex;
 }
 
 a {
     color: white;
     text-decoration: none;
 }
-.copyright{
+
+.copyright {
     display: flex;
     color: white;
     flex-direction: column;
-   
-    background-color: #282828;
-    padding: 10px ;
- 
-}
 
-.MainContent{
-    display: flex;
-    background-color: rgb(100, 86, 54);
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    width: 45vw;
-    height: 200vh;
-    margin: 0 auto;
+    background-color: #282828;
+    padding: 10px;
+
 }
