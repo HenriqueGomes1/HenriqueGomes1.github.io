@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Disney Univille | O site não oficial</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <nav>
+      <div class="logo">
+        <a href="#"><img class="logo-disney" src="logo.png" alt="" /></a>
+      </div>
+      <div class="text-click">
+        <ul>
+          <li>
+            <a href="https://www.disneyplus.com"><b>DISNEY+</b></a>
+          </li>
+          <li>
+            <a href="https://www.disney.com.br/filmes"><b>FILMES</b></a>
+          </li>
+          <li>
+            <a href="https://radiodisney.com.br/"><b>RÁDIO DISNEY</b></a>
+          </li>
+          <li>
+            <a href="https://aniversariomagico.disney.com.br/"
+              ><b>ANIVERSÁRIO MÁGICO</b></a
+            >
+          </li>
+          <li>
+            <a href="https://www.disney.com.br/espetaculos"
+              ><b>ESPETÁCULOS</b></a
+            >
+          </li>
+          <li>
+            <a href="#quizDisney"><b>QUIZ DA DISNEY</b></a>
+          </li>
+        </ul>
+      </div>
+      <div class="search-input">
+        <input class="aba-pesquisa" type="text" placeholder="Busca" />
+        <button class="botao"><img src="search.svg" alt="" /></button>
+      </div>
+    </nav>
+    <section class="secao1">
+      <img class="dew" src="deadpoolwolverine.jpeg" alt="" />
+      <div class="div-film">
+        <div class="titulo-film">
+          <img
+            class="pop-up-deadpool"
+            src="titulo.png"
+            alt=""
+            style="width: 320px"
+          />
+          <div style="align-items: center">
+            <p style="color: white; margin-left: 10%">
+              Sua dupla favorita já chegou no Disney+
+            </p>
+            <div
+              style="display: flex; flex-direction: column; align-items: center"
+            >
+              <button
+                style="
+                  width: 200px;
+                  height: 40px;
+                  border-radius: 20px;
+                  border-style: none;
+                  cursor: pointer;
+                "
+              >
+                <b>Assista Agora</b></button
+              ><br />
+            </div>
+            <div
+              style="display: flex; flex-direction: column; align-items: center"
+            >
+              <button
+                style="
+                  width: 200px;
+                  height: 40px;
+                  border-radius: 20px;
+                  border-style: none;
+                  cursor: pointer;
+                "
+              >
+                <b>Site oficial</b>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <section class="secao2">
+      <div class="titulo-form">
+        <p
+          id="quizDisney"
+          style="
+            font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial,
+              sans-serif;
+            font-size: large;
+          "
+        >
+          <b style="margin-left: 21%;">QUIZ DA DISNEY</b><br>
+          <b>Uma imagem e um sonho!!!</b>
+        </p>
+        <button
+          class="botao-aleatorio"
+          id="load-character"
+          style="
+            background-size: 400% 400%;
+            animation: gradient-animation 5s ease infinite;
+            width: 200px;
+            height: 40px;
+            border-radius: 20px;
+            border-style: none;
+            cursor: pointer;
+          "
+        >
+          Exibir Personagem Aleatório</button
+        ><br />
+        <div id="character-container">
+          <img id="character-image" src="" alt="" style="display: none" />
+        </div>
+        <!--container para as opções -->
+        <div id="options-container" class="options" style="display: none"></div>
+      </div>
+      <script>
+        const BASE_URL = "https://api.disneyapi.dev";
+
+        // buscar um personagem aleatório
+        async function fetchRandomCharacter() {
+          const response = await fetch(`${BASE_URL}/character`);
+          const data = await response.json();
+          const characters = data.data;
+          const randomIndex = Math.floor(Math.random() * characters.length);
+          return characters[randomIndex];
+        }
+
+        // exibir o personagem com opções de nome
+        async function showCharacterWithOptions() {
+          try {
+            const correctCharacter = await fetchRandomCharacter();
+            const wrongCharacter = await fetchRandomCharacter();
+
+            // Garantir que o personagem errado seja diferente do correto
+            if (correctCharacter._id === wrongCharacter._id) {
+              return showCharacterWithOptions();
+            }
+
+            // Configurar imagem do personagem
+            const imageElement = document.getElementById("character-image");
+            const optionsContainer =
+              document.getElementById("options-container");
+
+            imageElement.src = correctCharacter.imageUrl;
+            imageElement.style.display = "block";
+
+            // Criar opções
+            const options = [
+              { name: correctCharacter.name, isCorrect: true },
+              { name: wrongCharacter.name, isCorrect: false },
+            ];
+
+            // Embaralhar opções
+            options.sort(() => Math.random() - 0.5);
+
+            // Renderizar botões de opções
+            optionsContainer.innerHTML = "";
+            optionsContainer.style.display = "block";
+
+            options.forEach((option) => {
+              const button = document.createElement("button");
+              button.textContent = option.name;
+              button.style.cssText = `
+                margin: 5px;
+                padding: 10px 20px;
+                font-size: 16px;
+                cursor: pointer;
+                border-radius: 5px;
+                border: none;
+                background-color: #007bff;
+                color: white;
+              `;
+              button.onclick = () => {
+                if (option.isCorrect) {
+                  alert("Correto! 🎉");
+                } else {
+                  alert("Errado! 😢");
+                }
+                // Limpar a exibição
+                optionsContainer.style.display = "none";
+                imageElement.style.display = "none";
+              };
+              optionsContainer.appendChild(button);
+            });
+          } catch (error) {
+            console.error("Erro ao buscar personagem:", error);
+          }
+        }
+
+        // Adicionar evento ao botão
+        document
+          .getElementById("load-character")
+          .addEventListener("click", showCharacterWithOptions);
+      </script>
+    </section>
+    <section class="direitos-nada-autorais"></section>
+  </body>
+</html>
