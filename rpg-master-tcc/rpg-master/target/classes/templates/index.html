@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RPG Master</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+
+<div class="tela-dividida">
+
+    <section class="lado lado-jogador">
+        <span class="eyebrow">Mesa de RPG &middot; D&amp;D 5.5</span>
+        <h1>Sou Jogador</h1>
+        <p class="descricao-lado">
+            Crie sua ficha, veja Força, Destreza, Constituição, Inteligência, Sabedoria e
+            Carisma com os bônus calculados automaticamente, e deixe a IA sugerir
+            sua descrição e uma habilidade sob medida pra sua classe.
+        </p>
+        <a class="botao botao-verde" th:href="@{/personagens}">Entrar como Jogador</a>
+    </section>
+
+    <div class="lamina-brilho"></div>
+
+    <section class="lado lado-mestre">
+        <span class="eyebrow">Painel do Mestre</span>
+        <h1>Sou Mestre</h1>
+        <p class="descricao-lado">
+            Gerencie suas campanhas e peça à IA para gerar NPCs e monstros
+            sob demanda, com atributos, pontos de vida e nível de desafio
+            prontos pra mesa.
+        </p>
+        <a class="botao botao-roxo" th:href="@{/campanhas}">Entrar como Mestre</a>
+    </section>
+
+</div>
+
+</body>
+</html>

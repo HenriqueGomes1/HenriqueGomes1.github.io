@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Personagens · RPG Master</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body class="pagina-verde">
+<div class="pagina">
+
+    <a class="voltar-link" th:href="@{/}">&larr; Voltar para a tela inicial</a>
+
+    <div class="topo-pagina">
+        <div>
+            <h1 class="titulo-display">Personagens</h1>
+            <p>Fichas dos aventureiros desta mesa, com atributos de D&amp;D 5.5.</p>
+        </div>
+        <a class="botao botao-verde" th:href="@{/personagens/novo}">+ Novo Personagem</a>
+    </div>
+
+    <div class="grid-cards">
+
+        <div class="card-vidro card-vazio" th:if="${#lists.isEmpty(personagens)}">
+            <p>Nenhum personagem criado ainda. Que tal forjar o primeiro aventureiro?</p>
+        </div>
+
+        <div class="card-vidro" th:each="p : ${personagens}">
+            <div class="ficha-cabecalho">
+                <div>
+                    <h3 th:text="${p.nome}">Nome do Personagem</h3>
+                    <span class="ficha-classe" th:text="${p.classe != null ? p.classe.nomeExibicao : 'Sem classe'}">Classe</span>
+                </div>
+                <span class="ficha-nivel" th:text="'Nível ' + ${p.nivel}">Nível 1</span>
+            </div>
+
+            <p class="ficha-descricao" th:text="${p.descricao}">Descrição gerada pela IA.</p>
+
+            <div class="stat-grid">
+                <div class="stat-bloco">
+                    <span class="stat-label">Força</span>
+                    <span class="stat-valor" th:text="${p.forca}">10</span>
+                    <span class="stat-bonus" th:text="${(p.bonusForca >= 0 ? '+' : '') + p.bonusForca}">+0</span>
+                </div>
+                <div class="stat-bloco">
+                    <span class="stat-label">Destreza</span>
+                    <span class="stat-valor" th:text="${p.destreza}">10</span>
+                    <span class="stat-bonus" th:text="${(p.bonusDestreza >= 0 ? '+' : '') + p.bonusDestreza}">+0</span>
+                </div>
+                <div class="stat-bloco">
+                    <span class="stat-label">Constituição</span>
+                    <span class="stat-valor" th:text="${p.constituicao}">10</span>
+                    <span class="stat-bonus" th:text="${(p.bonusConstituicao >= 0 ? '+' : '') + p.bonusConstituicao}">+0</span>
+                </div>
+                <div class="stat-bloco">
+                    <span class="stat-label">Inteligência</span>
+                    <span class="stat-valor" th:text="${p.inteligencia}">10</span>
+                    <span class="stat-bonus" th:text="${(p.bonusInteligencia >= 0 ? '+' : '') + p.bonusInteligencia}">+0</span>
+                </div>
+                <div class="stat-bloco">
+                    <span class="stat-label">Sabedoria</span>
+                    <span class="stat-valor" th:text="${p.sabedoria}">10</span>
+                    <span class="stat-bonus" th:text="${(p.bonusSabedoria >= 0 ? '+' : '') + p.bonusSabedoria}">+0</span>
+                </div>
+                <div class="stat-bloco">
+                    <span class="stat-label">Carisma</span>
+                    <span class="stat-valor" th:text="${p.carisma}">10</span>
+                    <span class="stat-bonus" th:text="${(p.bonusCarisma >= 0 ? '+' : '') + p.bonusCarisma}">+0</span>
+                </div>
+            </div>
+
+            <div th:each="h : ${p.habilidades}" class="habilidade-item">
+                <strong th:text="${h.nome}">Habilidade</strong> —
+                <span th:text="${h.descricao}">Descrição da habilidade</span><br>
+                <span class="tag-efeito" th:text="'Atributo: ' + ${h.atributoChave?.nomeExibicao} + ' · Efeito: ' + ${h.tipoEfeito}">Atributo · Efeito</span>
+            </div>
+
+            <div class="ficha-rodape">
+                <a class="botao botao-secundario" th:href="@{/personagens/{id}(id=${p.id})}">Ver ficha completa</a>
+                <form th:action="@{/personagens/{id}/excluir(id=${p.id})}" method="post" onsubmit="return confirm('Excluir este personagem?');">
+                    <button type="submit" class="botao botao-perigo">Excluir</button>
+                </form>
+            </div>
+        </div>
+
+    </div>
+</div>
+</body>
+</html>
