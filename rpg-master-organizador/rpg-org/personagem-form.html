@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Personagem · RPG Master</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="pagina-verde">
+<div class="pagina">
+
+  <a class="voltar-link" href="personagens.html">&larr; Voltar para Personagens</a>
+
+  <div class="topo-pagina">
+    <h1 class="titulo-display" id="titulo-pagina">Novo Personagem</h1>
+  </div>
+
+  <div class="card-vidro" style="max-width:740px">
+    <div class="form-grid">
+
+      <div class="campo-largo">
+        <label for="nome">Nome</label>
+        <input type="text" id="nome" placeholder="Ex: Thalrik Punho-de-Ferro">
+      </div>
+
+      <div>
+        <label for="classe">Classe</label>
+        <select id="classe">
+          <option value="GUERREIRO">Guerreiro</option>
+          <option value="MAGO">Mago</option>
+          <option value="LADINO">Ladino</option>
+          <option value="CLERIGO">Clérigo</option>
+          <option value="BARBARO">Bárbaro</option>
+          <option value="BARDO">Bardo</option>
+          <option value="PALADINO">Paladino</option>
+          <option value="PATRULHEIRO">Patrulheiro</option>
+          <option value="FEITICEIRO">Feiticeiro</option>
+          <option value="BRUXO">Bruxo</option>
+          <option value="MONGE">Monge</option>
+          <option value="DRUIDA">Druida</option>
+        </select>
+      </div>
+
+      <div>
+        <label for="nivel">Nível (1–20)</label>
+        <input type="number" id="nivel" min="1" max="20" value="1">
+      </div>
+
+      <div class="campo-largo">
+        <label for="descricao">Descrição / história do personagem</label>
+        <textarea id="descricao" placeholder="Conte um pouco sobre este aventureiro..."></textarea>
+      </div>
+
+      <div>
+        <label for="campanha">Campanha (opcional)</label>
+        <select id="campanha">
+          <option value="">— Sem campanha —</option>
+        </select>
+      </div>
+
+    </div>
+
+    <!-- Atributos -->
+    <div style="margin-top:1.4rem">
+      <label style="margin-bottom:.7rem;display:block">Atributos</label>
+      <div class="campo-atributos">
+        <div><label for="forca">Força</label><input type="number" id="forca" min="1" max="20" value="10"></div>
+        <div><label for="destreza">Destreza</label><input type="number" id="destreza" min="1" max="20" value="10"></div>
+        <div><label for="constituicao">Constituição</label><input type="number" id="constituicao" min="1" max="20" value="10"></div>
+        <div><label for="inteligencia">Inteligência</label><input type="number" id="inteligencia" min="1" max="20" value="10"></div>
+        <div><label for="sabedoria">Sabedoria</label><input type="number" id="sabedoria" min="1" max="20" value="10"></div>
+        <div><label for="carisma">Carisma</label><input type="number" id="carisma" min="1" max="20" value="10"></div>
+      </div>
+    </div>
+
+    <!-- Habilidades dinâmicas -->
+    <div style="margin-top:1.6rem">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.8rem">
+        <label style="margin:0">Habilidades</label>
+        <button class="botao botao-sm botao-verde" type="button" onclick="addHabilidade()">+ Adicionar</button>
+      </div>
+      <div id="lista-habilidades"></div>
+    </div>
+
+    <div class="acoes-form">
+      <button class="botao botao-verde" onclick="salvar()">Salvar Personagem</button>
+      <a class="botao botao-secundario" href="personagens.html">Cancelar</a>
+    </div>
+  </div>
+
+</div>
+<script src="js/storage.js"></script>
+<script src="js/app.js"></script>
+<script>
+  const id = getIdDaUrl();
+  let editando = null;
+  let contadorHab = 0;
+
+  // Popula select de campanhas
+  listarCampanhas().forEach(c => {
+    const opt = document.createElement('option');
+    opt.value = c.id;
+    opt.textContent = c.nome;
+    document.getElementById('campanha').appendChild(opt);
+  });
+
+  // Modo edição: carrega dados existentes
+  if (id) {
+    editando = buscarPersonagem(id);
+    if (editando) {
+      document.getElementById('titulo-pagina').textContent = 'Editar Personagem';
+      document.getElementById('nome').value         = editando.nome         || '';
+      document.getElementById('classe').value       = editando.classe       || 'GUERREIRO';
+      document.getElementById('nivel').value        = editando.nivel        || 1;
+      document.getElementById('descricao').value    = editando.descricao    || '';
+      document.getElementById('campanha').value     = editando.campanhaId   || '';
+      document.getElementById('forca').value        = editando.forca        ?? 10;
+      document.getElementById('destreza').value     = editando.destreza     ?? 10;
+      document.getElementById('constituicao').value = editando.constituicao ?? 10;
+      document.getElementById('inteligencia').value = editando.inteligencia ?? 10;
+      document.getElementById('sabedoria').value    = editando.sabedoria    ?? 10;
+      document.getElementById('carisma').value      = editando.carisma      ?? 10;
+      (editando.habilidades || []).forEach(h => addHabilidade(h));
+    }
+  }
+
+  function addHabilidade(dados) {
+    const n = contadorHab++;
+    const div = document.createElement('div');
+    div.className = 'habilidade-row';
+    div.id = `hab-${n}`;
+    div.innerHTML = `
+      <div>
+        <label>Nome da habilidade</label>
+        <input type="text" id="hab-nome-${n}" placeholder="Ex: Golpe Sísmico" value="${dados?.nome||''}">
+      </div>
+      <div>
+        <label>Tipo de efeito</label>
+        <select id="hab-efeito-${n}">
+          ${['fisico','fogo','gelo','raio','cura','veneno','sagrado','sombrio','psiquico'].map(e =>
+            `<option value="${e}" ${dados?.tipoEfeito===e?'selected':''}>${e.charAt(0).toUpperCase()+e.slice(1)}</option>`
+          ).join('')}
+        </select>
+      </div>
+      <div>
+        <label>Atributo chave</label>
+        <select id="hab-atributo-${n}">
+          ${Object.entries(ATRIBUTOS_EXIBICAO).map(([k,v]) =>
+            `<option value="${k}" ${dados?.atributoChave===k?'selected':''}>${v}</option>`
+          ).join('')}
+        </select>
+      </div>
+      <div class="campo-largo">
+        <label>Descrição da habilidade</label>
+        <textarea id="hab-desc-${n}" rows="2" placeholder="O que esta habilidade faz...">${dados?.descricao||''}</textarea>
+      </div>
+      <button class="botao botao-perigo botao-sm btn-remover"
+        type="button" onclick="removerHabilidade(${n})">✕ Remover</button>`;
+    document.getElementById('lista-habilidades').appendChild(div);
+    div.querySelector(`#hab-nome-${n}`).focus();
+  }
+
+  function removerHabilidade(n) {
+    document.getElementById(`hab-${n}`)?.remove();
+  }
+
+  function lerHabilidades() {
+    return Array.from(document.querySelectorAll('[id^="hab-"]:not(input):not(select):not(textarea):not(button)'))
+      .map(div => {
+        const n = div.id.split('-')[1];
+        const nome = document.getElementById(`hab-nome-${n}`)?.value?.trim();
+        if (!nome) return null;
+        return {
+          id: editando?.habilidades?.[parseInt(n)]?.id || gerarId(),
+          nome,
+          descricao:     document.getElementById(`hab-desc-${n}`)?.value?.trim() || '',
+          atributoChave: document.getElementById(`hab-atributo-${n}`)?.value || 'FORCA',
+          tipoEfeito:    document.getElementById(`hab-efeito-${n}`)?.value || 'fisico'
+        };
+      }).filter(Boolean);
+  }
+
+  function salvar() {
+    const nome = document.getElementById('nome').value.trim();
+    if (!nome) { toast('Informe o nome do personagem.','erro'); return; }
+
+    const dados = {
+      id:           editando?.id || null,
+      nome,
+      classe:       document.getElementById('classe').value,
+      nivel:        parseInt(document.getElementById('nivel').value) || 1,
+      descricao:    document.getElementById('descricao').value.trim(),
+      campanhaId:   document.getElementById('campanha').value || null,
+      forca:        parseInt(document.getElementById('forca').value)        || 10,
+      destreza:     parseInt(document.getElementById('destreza').value)     || 10,
+      constituicao: parseInt(document.getElementById('constituicao').value) || 10,
+      inteligencia: parseInt(document.getElementById('inteligencia').value) || 10,
+      sabedoria:    parseInt(document.getElementById('sabedoria').value)    || 10,
+      carisma:      parseInt(document.getElementById('carisma').value)      || 10,
+      habilidades:  lerHabilidades()
+    };
+
+    // Vincula campanha: se mudou, remove do vínculo antigo
+    if (editando?.campanhaId && editando.campanhaId !== dados.campanhaId) {
+      const cAnt = buscarCampanha(editando.campanhaId);
+      if (cAnt) {
+        cAnt.personagensIds = (cAnt.personagensIds||[]).filter(pid => pid !== dados.id);
+        salvarCampanha(cAnt);
+      }
+    }
+    const p = salvarPersonagem(dados);
+    if (p.campanhaId) {
+      const camp = buscarCampanha(p.campanhaId);
+      if (camp && !(camp.personagensIds||[]).includes(p.id)) {
+        camp.personagensIds = [...(camp.personagensIds||[]), p.id];
+        salvarCampanha(camp);
+      }
+    }
+
+    toast('Personagem salvo!','sucesso');
+    setTimeout(() => ir('personagens.html'), 600);
+  }
+</script>
+</body>
+</html>

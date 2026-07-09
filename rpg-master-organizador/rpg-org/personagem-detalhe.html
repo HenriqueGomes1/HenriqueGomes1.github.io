@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ficha · RPG Master</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="pagina-verde">
+<div class="pagina">
+  <a class="voltar-link" href="personagens.html">&larr; Voltar para Personagens</a>
+  <div id="conteudo"><p>Carregando...</p></div>
+</div>
+<script src="js/storage.js"></script>
+<script src="js/app.js"></script>
+<script>
+  const id = getIdDaUrl();
+  const p  = id ? buscarPersonagem(id) : null;
+
+  if (!p) {
+    document.getElementById('conteudo').innerHTML =
+      '<p>Personagem não encontrado. <a href="personagens.html">Voltar</a></p>';
+  } else {
+    document.title = `${p.nome} · RPG Master`;
+    const camp = p.campanhaId ? buscarCampanha(p.campanhaId) : null;
+    const habs = (p.habilidades||[]).map(h => `
+      <div class="habilidade-item">
+        <strong>${h.nome}</strong> — ${h.descricao}<br>
+        <span class="tag-efeito">
+          ${ATRIBUTOS_EXIBICAO[h.atributoChave]||h.atributoChave} · ${h.tipoEfeito}
+        </span>
+      </div>`).join('') || '<p>Nenhuma habilidade cadastrada.</p>';
+
+    document.getElementById('conteudo').innerHTML = `
+      <div class="topo-pagina">
+        <div>
+          <h1 class="titulo-display">${p.nome}</h1>
+          <span class="ficha-classe">${CLASSES_RPG[p.classe]||p.classe}</span>
+          &nbsp;<span class="ficha-nivel">Nível ${p.nivel}</span>
+        </div>
+        <div style="display:flex;gap:.6rem;flex-wrap:wrap">
+          <a class="botao botao-sm" href="personagem-form.html?id=${p.id}">✏ Editar</a>
+          <button class="botao botao-perigo botao-sm" onclick="del()">Excluir</button>
+        </div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem">
+        <div class="card-vidro">
+          <h2 style="font-size:1.1rem;margin-bottom:.6rem">Descrição</h2>
+          <p>${p.descricao||'Sem descrição.'}</p>
+          ${camp?`<p style="font-size:.82rem;color:var(--texto-suave)">
+            Campanha: <a href="campanha-detalhe.html?id=${camp.id}"
+              style="color:var(--verde-glow)">${camp.nome}</a></p>`:''}
+        </div>
+        <div class="card-vidro">
+          <h2 style="font-size:1.1rem;margin-bottom:.6rem">Atributos</h2>
+          ${htmlStatGrid(p,'var(--verde-glow)')}
+        </div>
+        <div class="card-vidro" style="grid-column:1/-1">
+          <h2 style="font-size:1.1rem;margin-bottom:.8rem">Habilidades</h2>
+          ${habs}
+        </div>
+      </div>`;
+  }
+
+  function del() {
+    if (!confirmar(`Excluir o personagem "${p.nome}"?`)) return;
+    excluirPersonagem(p.id);
+    ir('personagens.html');
+  }
+</script>
+</body>
+</html>

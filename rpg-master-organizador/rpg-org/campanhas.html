@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Campanhas · RPG Master</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="pagina-roxo">
+<div class="pagina">
+
+  <a class="voltar-link" href="index.html">&larr; Tela inicial</a>
+
+  <div class="topo-pagina">
+    <div>
+      <h1 class="titulo-display">Campanhas</h1>
+      <p>Suas aventuras, NPCs e o painel do Mestre.</p>
+    </div>
+    <a class="botao botao-roxo" href="campanha-form.html">+ Nova Campanha</a>
+  </div>
+
+  <div class="grid-cards" id="grid"></div>
+
+</div>
+<script src="js/storage.js"></script>
+<script src="js/app.js"></script>
+<script>
+  function render() {
+    const grid = document.getElementById('grid');
+    const lista = listarCampanhas();
+
+    if (!lista.length) {
+      grid.innerHTML = `<div class="card-vidro card-vazio">
+        <p>Nenhuma campanha criada ainda.</p>
+        <a class="botao botao-roxo" href="campanha-form.html" style="margin-top:1rem;display:inline-block">
+          Criar a primeira
+        </a></div>`;
+      return;
+    }
+
+    grid.innerHTML = lista.map(c => {
+      const tn = (c.npcs||[]).length;
+      const tp = (c.personagensIds||[]).length;
+      return `<div class="card-vidro">
+        <div class="ficha-cabecalho">
+          <div>
+            <h3>${c.nome}</h3>
+            <span style="font-size:.8rem;color:var(--texto-suave)">Mestre: ${c.mestre}</span>
+          </div>
+          <span class="ficha-nivel">${c.dataCriacao||''}</span>
+        </div>
+        <p class="ficha-descricao">${c.descricao||''}</p>
+        <div style="display:flex;gap:1.2rem;font-size:.82rem;color:var(--texto-suave);margin-bottom:1rem">
+          <span>👥 ${tp} personagen${tp!==1?'s':''}</span>
+          <span>🧌 ${tn} NPC${tn!==1?'s':''}</span>
+        </div>
+        <div class="ficha-rodape">
+          <a class="botao botao-secundario botao-sm" href="campanha-detalhe.html?id=${c.id}">Abrir</a>
+          <a class="botao botao-sm" href="campanha-form.html?id=${c.id}">Editar</a>
+          <button class="botao botao-perigo botao-sm" onclick="del('${c.id}')">Excluir</button>
+        </div></div>`;
+    }).join('');
+  }
+
+  function del(id) {
+    if (!confirmar('Excluir esta campanha e todos os seus NPCs?')) return;
+    excluirCampanha(id);
+    render();
+    toast('Campanha excluída.','info');
+  }
+
+  render();
+</script>
+</body>
+</html>

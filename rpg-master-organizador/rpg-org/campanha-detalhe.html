@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Campanha · RPG Master</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="pagina-roxo">
+<div class="pagina">
+  <a class="voltar-link" href="campanhas.html">&larr; Voltar para Campanhas</a>
+  <div id="conteudo"><p>Carregando...</p></div>
+</div>
+<script src="js/storage.js"></script>
+<script src="js/app.js"></script>
+<script>
+  const campanhaId = getIdDaUrl();
+  let campanha = campanhaId ? buscarCampanha(campanhaId) : null;
+
+  if (!campanha) {
+    document.getElementById('conteudo').innerHTML =
+      '<p>Campanha não encontrada. <a href="campanhas.html">Voltar</a></p>';
+  } else {
+    render();
+  }
+
+  function render() {
+    campanha = buscarCampanha(campanhaId); // recarrega sempre
+    document.title = `${campanha.nome} · RPG Master`;
+
+    const personagens = (campanha.personagensIds||[])
+      .map(pid => buscarPersonagem(pid)).filter(Boolean);
+
+    const npcsHtml = !(campanha.npcs||[]).length
+      ? `<div class="card-vidro card-vazio">
+           <p>Nenhum NPC cadastrado ainda.</p>
+           <a class="botao botao-roxo" href="npc-form.html?campanhaId=${campanha.id}"
+              style="margin-top:1rem;display:inline-block">Adicionar NPC</a>
+         </div>`
+      : campanha.npcs.map(n => `
+          <div class="card-vidro">
+            <div class="ficha-cabecalho">
+              <div>
+                <h3>${n.nome}</h3>
+                <span class="badge-tipo npc-tipo-${n.tipo}">${TIPOS_NPC[n.tipo]||n.tipo}</span>
+              </div>
+              <span class="ficha-nivel">CR ${n.nivelDesafio} · ${n.pontosVida} PV</span>
+            </div>
+            <p class="ficha-descricao">${n.descricao||''}</p>
+            ${htmlStatGrid(n,'var(--roxo-glow)')}
+            <div class="ficha-rodape">
+              <a class="botao botao-sm" href="npc-form.html?campanhaId=${campanha.id}&id=${n.id}">
+                ✏ Editar
+              </a>
+              <button class="botao botao-perigo botao-sm" onclick="delNpc('${n.id}')">
+                Remover
+              </button>
+            </div>
+          </div>`).join('');
+
+    const personagensHtml = !personagens.length
+      ? `<p style="color:var(--texto-suave)">Nenhum personagem vinculado a esta campanha.</p>`
+      : personagens.map(p => `
+          <div class="linha-item">
+            <span>
+              <strong>${p.nome}</strong> —
+              ${CLASSES_RPG[p.classe]||p.classe}
+              (Nível ${p.nivel})
+            </span>
+            <div style="display:flex;gap:.5rem">
+              <a class="botao botao-sm botao-secundario"
+                 href="personagem-detalhe.html?id=${p.id}">Ver ficha</a>
+              <button class="botao botao-perigo botao-sm"
+                onclick="desvincularPersonagem('${p.id}')">✕</button>
+            </div>
+          </div>`).join('');
+
+    document.getElementById('conteudo').innerHTML = `
+      <div class="topo-pagina">
+        <div>
+          <h1 class="titulo-display">${campanha.nome}</h1>
+          <p style="margin:0">Mestre: ${campanha.mestre} · ${campanha.dataCriacao||''}</p>
+        </div>
+        <div style="display:flex;gap:.6rem;flex-wrap:wrap">
+          <a class="botao botao-sm" href="campanha-form.html?id=${campanha.id}">✏ Editar</a>
+          <button class="botao botao-perigo botao-sm" onclick="delCampanha()">Excluir</button>
+        </div>
+      </div>
+
+      <div class="card-vidro" style="margin-bottom:2rem">
+        <p style="margin:0">${campanha.descricao||'Sem descrição.'}</p>
+      </div>
+
+      <!-- NPCs -->
+      <div class="secao-campanha">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem">
+          <h2>NPCs &amp; Monstros (${(campanha.npcs||[]).length})</h2>
+          <a class="botao botao-roxo botao-sm"
+             href="npc-form.html?campanhaId=${campanha.id}">+ Novo NPC</a>
+        </div>
+        <div class="grid-cards">${npcsHtml}</div>
+      </div>
+
+      <!-- Personagens -->
+      <div class="secao-campanha">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem">
+          <h2>Personagens (${personagens.length})</h2>
+          <button class="botao botao-sm botao-secundario" onclick="modalVincular()">
+            + Vincular Personagem
+          </button>
+        </div>
+        <div class="card-vidro lista-simples">${personagensHtml}</div>
+      </div>`;
+  }
+
+  function delNpc(npcId) {
+    if (!confirmar('Remover este NPC?')) return;
+    excluirNpcDaCampanha(campanha.id, npcId);
+    render();
+    toast('NPC removido.','info');
+  }
+
+  function delCampanha() {
+    if (!confirmar(`Excluir "${campanha.nome}" e todos os seus NPCs?`)) return;
+    excluirCampanha(campanha.id);
+    ir('campanhas.html');
+  }
+
+  function desvincularPersonagem(pid) {
+    if (!confirmar('Desvincular este personagem da campanha?')) return;
+    campanha = buscarCampanha(campanhaId);
+    campanha.personagensIds = (campanha.personagensIds||[]).filter(id => id !== pid);
+    salvarCampanha(campanha);
+    const p = buscarPersonagem(pid);
+    if (p && p.campanhaId === campanhaId) { p.campanhaId = null; salvarPersonagem(p); }
+    render();
+    toast('Personagem desvinculado.','info');
+  }
+
+  function modalVincular() {
+    const todos = listarPersonagens();
+    const jaVinculados = campanha.personagensIds || [];
+    const disponiveis  = todos.filter(p => !jaVinculados.includes(p.id));
+    if (!disponiveis.length) {
+      toast('Todos os personagens já estão vinculados a esta campanha.','aviso');
+      return;
+    }
+    const opcoes = disponiveis.map(p =>
+      `${p.id}|${p.nome} (${CLASSES_RPG[p.classe]||p.classe}, Nível ${p.nivel})`
+    );
+    const escolha = prompt(
+      'Cole o número do personagem a vincular:\n\n' +
+      opcoes.map((o,i) => `${i+1}. ${o.split('|')[1]}`).join('\n')
+    );
+    const idx = parseInt(escolha) - 1;
+    if (isNaN(idx) || idx < 0 || idx >= opcoes.length) return;
+    const pid = opcoes[idx].split('|')[0];
+    campanha = buscarCampanha(campanhaId);
+    campanha.personagensIds = [...(campanha.personagensIds||[]), pid];
+    salvarCampanha(campanha);
+    const p = buscarPersonagem(pid);
+    if (p) { p.campanhaId = campanhaId; salvarPersonagem(p); }
+    render();
+    toast('Personagem vinculado!','sucesso');
+  }
+</script>
+</body>
+</html>

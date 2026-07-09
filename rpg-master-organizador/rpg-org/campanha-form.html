@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Campanha · RPG Master</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="pagina-roxo">
+<div class="pagina">
+
+  <a class="voltar-link" href="campanhas.html">&larr; Voltar para Campanhas</a>
+
+  <div class="topo-pagina">
+    <h1 class="titulo-display" id="titulo-pagina">Nova Campanha</h1>
+  </div>
+
+  <div class="card-vidro" style="max-width:620px">
+    <div class="form-grid">
+      <div class="campo-largo">
+        <label for="nome">Nome da campanha</label>
+        <input type="text" id="nome" placeholder="Ex: A Maldição de Vaelthorn">
+      </div>
+      <div class="campo-largo">
+        <label for="mestre">Nome do Mestre</label>
+        <input type="text" id="mestre" placeholder="Seu nome ou apelido">
+      </div>
+      <div class="campo-largo">
+        <label for="descricao">Descrição / premissa</label>
+        <textarea id="descricao" rows="4"
+          placeholder="Resumo do cenário, conflito principal e tom da aventura..."></textarea>
+      </div>
+    </div>
+
+    <div class="acoes-form">
+      <button class="botao botao-roxo" onclick="salvar()">Salvar Campanha</button>
+      <a class="botao botao-secundario" href="campanhas.html">Cancelar</a>
+    </div>
+  </div>
+
+</div>
+<script src="js/storage.js"></script>
+<script src="js/app.js"></script>
+<script>
+  const id = getIdDaUrl();
+  let editando = null;
+
+  if (id) {
+    editando = buscarCampanha(id);
+    if (editando) {
+      document.getElementById('titulo-pagina').textContent = 'Editar Campanha';
+      document.getElementById('nome').value      = editando.nome      || '';
+      document.getElementById('mestre').value    = editando.mestre    || '';
+      document.getElementById('descricao').value = editando.descricao || '';
+    }
+  }
+
+  function salvar() {
+    const nome   = document.getElementById('nome').value.trim();
+    const mestre = document.getElementById('mestre').value.trim();
+    if (!nome)   { toast('Informe o nome da campanha.','erro'); return; }
+    if (!mestre) { toast('Informe o nome do Mestre.','erro'); return; }
+
+    const dados = {
+      id:       editando?.id || null,
+      nome, mestre,
+      descricao:       document.getElementById('descricao').value.trim(),
+      npcs:            editando?.npcs            || [],
+      personagensIds:  editando?.personagensIds  || [],
+      dataCriacao:     editando?.dataCriacao     || null
+    };
+
+    const c = salvarCampanha(dados);
+    toast('Campanha salva!','sucesso');
+    setTimeout(() => ir(`campanha-detalhe.html?id=${c.id}`), 600);
+  }
+</script>
+</body>
+</html>

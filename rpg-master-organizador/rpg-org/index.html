@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RPG Master</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<div class="tela-dividida">
+  <section class="lado lado-jogador">
+    <span class="eyebrow">Mesa de RPG &middot; D&amp;D 5.5</span>
+    <h1>Sou Jogador</h1>
+    <p class="descricao-lado">
+      Crie e gerencie fichas de personagem com os seis atributos clássicos
+      e bônus calculados automaticamente.
+    </p>
+    <a class="botao botao-verde" href="personagens.html">Entrar como Jogador</a>
+  </section>
+
+  <div class="lamina-brilho"></div>
+
+  <section class="lado lado-mestre">
+    <span class="eyebrow">Painel do Mestre</span>
+    <h1>Sou Mestre</h1>
+    <p class="descricao-lado">
+      Organize campanhas, cadastre NPCs e monstros com atributos completos
+      prontos para a mesa.
+    </p>
+    <a class="botao botao-roxo" href="campanhas.html">Entrar como Mestre</a>
+  </section>
+</div>
+
+<!-- Botão de importar discreto no canto, só na tela inicial -->
+<div style="position:fixed;bottom:1.2rem;right:1.5rem;display:flex;gap:.6rem;z-index:100">
+  <button class="botao botao-sm botao-verde" id="btn-exp">💾 Exportar</button>
+  <button class="botao botao-sm botao-secundario" id="btn-imp">📂 Importar</button>
+</div>
+<input type="file" id="file-input" accept=".json" style="display:none">
+
+<script src="js/storage.js"></script>
+<script src="js/app.js"></script>
+<script>
+  document.getElementById('btn-exp').addEventListener('click', () => {
+    exportarJSON();
+    toast('Arquivo gerado — verifique sua pasta de downloads.', 'sucesso');
+  });
+  document.getElementById('btn-imp').addEventListener('click', () =>
+    document.getElementById('file-input').click());
+  document.getElementById('file-input').addEventListener('change', e => {
+    const arquivo = e.target.files[0];
+    if (!arquivo) return;
+    importarJSON(arquivo, (err, dados) => {
+      if (err) { toast('Arquivo inválido.', 'erro'); return; }
+      const np = (dados.personagens||[]).length;
+      const nc = (dados.campanhas||[]).length;
+      if (!confirmar(`Importar ${np} personagem(ns) e ${nc} campanha(s)?\nIsso substituirá os dados atuais.`)) return;
+      aplicarImportacao(dados);
+      toast('Importado! Recarregando...', 'sucesso');
+      setTimeout(() => location.reload(), 800);
+    });
+  });
+</script>
+</body>
+</html>

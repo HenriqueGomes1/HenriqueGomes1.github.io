@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NPC · RPG Master</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="pagina-roxo">
+<div class="pagina">
+
+  <a class="voltar-link" id="link-voltar" href="campanhas.html">&larr; Voltar para a Campanha</a>
+
+  <div class="topo-pagina">
+    <h1 class="titulo-display" id="titulo-pagina">Novo NPC</h1>
+  </div>
+
+  <div class="card-vidro" style="max-width:740px">
+    <div class="form-grid">
+
+      <div class="campo-largo">
+        <label for="nome">Nome</label>
+        <input type="text" id="nome" placeholder="Ex: Sumo Cultista Mordrek">
+      </div>
+
+      <div>
+        <label for="tipo">Tipo</label>
+        <select id="tipo">
+          <option value="ALIADO">Aliado</option>
+          <option value="NEUTRO">Neutro</option>
+          <option value="VILAO">Vilão</option>
+          <option value="MONSTRO">Monstro</option>
+        </select>
+      </div>
+
+      <div>
+        <label for="nivelDesafio">Nível de Desafio (CR)</label>
+        <input type="text" id="nivelDesafio" placeholder="Ex: 1/4, 1, 5, N/A">
+      </div>
+
+      <div>
+        <label for="pontosVida">Pontos de Vida</label>
+        <input type="number" id="pontosVida" min="1" value="10">
+      </div>
+
+      <div class="campo-largo">
+        <label for="descricao">Descrição</label>
+        <textarea id="descricao" placeholder="Aparência, personalidade e papel na campanha..."></textarea>
+      </div>
+
+    </div>
+
+    <!-- Atributos -->
+    <div style="margin-top:1.4rem">
+      <label style="margin-bottom:.7rem;display:block">Atributos</label>
+      <div class="campo-atributos">
+        <div><label for="forca">Força</label><input type="number" id="forca" min="1" max="20" value="10"></div>
+        <div><label for="destreza">Destreza</label><input type="number" id="destreza" min="1" max="20" value="10"></div>
+        <div><label for="constituicao">Constituição</label><input type="number" id="constituicao" min="1" max="20" value="10"></div>
+        <div><label for="inteligencia">Inteligência</label><input type="number" id="inteligencia" min="1" max="20" value="10"></div>
+        <div><label for="sabedoria">Sabedoria</label><input type="number" id="sabedoria" min="1" max="20" value="10"></div>
+        <div><label for="carisma">Carisma</label><input type="number" id="carisma" min="1" max="20" value="10"></div>
+      </div>
+    </div>
+
+    <div class="acoes-form">
+      <button class="botao botao-roxo" onclick="salvar()">Salvar NPC</button>
+      <a class="botao botao-secundario" id="btn-cancelar" href="campanhas.html">Cancelar</a>
+    </div>
+  </div>
+
+</div>
+<script src="js/storage.js"></script>
+<script src="js/app.js"></script>
+<script>
+  const campanhaId = getIdDaUrl('campanhaId');
+  const npcId      = getIdDaUrl('id');
+  let editando = null;
+
+  // Atualiza links de voltar e cancelar
+  if (campanhaId) {
+    const href = `campanha-detalhe.html?id=${campanhaId}`;
+    document.getElementById('link-voltar').href   = href;
+    document.getElementById('btn-cancelar').href  = href;
+  }
+
+  // Modo edição
+  if (npcId && campanhaId) {
+    editando = buscarNpc(campanhaId, npcId);
+    if (editando) {
+      document.getElementById('titulo-pagina').textContent = 'Editar NPC';
+      document.getElementById('nome').value         = editando.nome         || '';
+      document.getElementById('tipo').value         = editando.tipo         || 'NEUTRO';
+      document.getElementById('nivelDesafio').value = editando.nivelDesafio || '';
+      document.getElementById('pontosVida').value   = editando.pontosVida   ?? 10;
+      document.getElementById('descricao').value    = editando.descricao    || '';
+      document.getElementById('forca').value        = editando.forca        ?? 10;
+      document.getElementById('destreza').value     = editando.destreza     ?? 10;
+      document.getElementById('constituicao').value = editando.constituicao ?? 10;
+      document.getElementById('inteligencia').value = editando.inteligencia ?? 10;
+      document.getElementById('sabedoria').value    = editando.sabedoria    ?? 10;
+      document.getElementById('carisma').value      = editando.carisma      ?? 10;
+    }
+  }
+
+  function salvar() {
+    if (!campanhaId) { toast('Campanha não identificada.','erro'); return; }
+    const nome = document.getElementById('nome').value.trim();
+    if (!nome) { toast('Informe o nome do NPC.','erro'); return; }
+
+    const dados = {
+      id:            editando?.id || null,
+      nome,
+      tipo:          document.getElementById('tipo').value,
+      nivelDesafio:  document.getElementById('nivelDesafio').value.trim() || '1',
+      pontosVida:    parseInt(document.getElementById('pontosVida').value) || 10,
+      descricao:     document.getElementById('descricao').value.trim(),
+      forca:         parseInt(document.getElementById('forca').value)        || 10,
+      destreza:      parseInt(document.getElementById('destreza').value)     || 10,
+      constituicao:  parseInt(document.getElementById('constituicao').value) || 10,
+      inteligencia:  parseInt(document.getElementById('inteligencia').value) || 10,
+      sabedoria:     parseInt(document.getElementById('sabedoria').value)    || 10,
+      carisma:       parseInt(document.getElementById('carisma').value)      || 10
+    };
+
+    salvarNpcNaCampanha(campanhaId, dados);
+    toast('NPC salvo!','sucesso');
+    setTimeout(() => ir(`campanha-detalhe.html?id=${campanhaId}`), 600);
+  }
+</script>
+</body>
+</html>
