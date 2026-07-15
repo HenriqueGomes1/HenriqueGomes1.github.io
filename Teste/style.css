@@ -1,0 +1,68 @@
+:root{
+  --green-deep:#12301f;
+  --green-bright:#74d9a0;
+  --purple-deep:#241236;
+  --purple-bright:#c79bf2;
+  --ink:#14111b;
+  --parchment:#efe6d0;
+}
+*{ box-sizing:border-box; }
+html,body{ margin:0; padding:0; height:100%; }
+body{
+  font-family:Georgia, 'Times New Roman', serif;
+  background:var(--ink);
+  color:var(--parchment);
+}
+
+.view{ display:none; min-height:100vh; }
+.view.active{ display:block; }
+
+/* HOME split screen */
+#view-home{
+  display:flex;
+  min-height:100vh;
+}
+.half{
+  flex:1;
+  border:none;
+  cursor:pointer;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:2rem;
+  color:#fff;
+  font-family:inherit;
+  transition:flex .4s ease;
+}
+.half:hover{ flex:1.15; }
+.half-player{ background:var(--green-deep); }
+.half-master{ background:var(--purple-deep); }
+
+.half-inner{ text-align:center; max-width:320px; }
+.half-rune{ display:block; font-size:2.4rem; margin-bottom:.5rem; }
+.half-title{ font-size:2.2rem; margin:0 0 .4rem; }
+.half-player .half-title{ color:var(--green-bright); }
+.half-master .half-title{ color:var(--purple-bright); }
+.half-sub{ opacity:.8; margin:0; font-size:1rem; }
+
+/* PLACEHOLDER VIEWS */
+.app-header{
+  display:flex; align-items:center; gap:1.2rem;
+  padding:1.2rem 2rem;
+}
+.header-player{ background:var(--green-deep); }
+.header-master{ background:var(--purple-deep); }
+.app-header h1{ font-size:1.4rem; margin:0; }
+
+.btn-back{
+  background:none; border:1px solid rgba(255,255,255,.4); color:#fff;
+  padding:.5rem 1rem; border-radius:8px; cursor:pointer; font-size:.85rem;
+}
+.btn-back:hover{ border-color:#fff; }
+
+.placeholder-body{ padding:2rem; font-size:1.05rem; opacity:.85; }
+
+@media (max-width:760px){
+  #view-home{ flex-direction:column; }
+  .half:hover{ flex:1; }
+}
